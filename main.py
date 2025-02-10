@@ -5,11 +5,12 @@ RED = "#e7305b"
 GREEN = "#379B46"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 1
-SHORT_BREAK_MIN = 1
-LONG_BREAK_MIN = 1
+WORK_MIN = 25
+SHORT_BREAK_MIN = 5
+LONG_BREAK_MIN = 20
 reps = 0
 timer = None
+count_down_running = False
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 def reset_timer():
@@ -22,8 +23,12 @@ def reset_timer():
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
+    global count_down_running
+    if count_down_running:
+        window.after_cancel(timer)
     global reps
     reps += 1
+    rep_label.config(text=reps)
     if reps % 2 != 0 & reps<8:
         timer_label.config(text="Work", fg=GREEN)
         count_down(WORK_MIN * 60)
@@ -36,6 +41,8 @@ def start_timer():
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
+    global count_down_running
+    count_down_running = True
     minutes = count // 60  # Integer division to get minutes
     seconds = count % 60   # Remainder to get seconds
     
@@ -71,6 +78,8 @@ canvas.grid(row=1, column=1)
 timer_label = tk.Label(text="Timer", font=(FONT_NAME, 50, "bold"), bg=YELLOW, fg=GREEN)
 timer_label.grid(row=0, column=1)
 
+rep_label = tk.Label(text=reps, font=(FONT_NAME, 20, "bold"), bg=YELLOW, fg=GREEN)
+rep_label.grid(row=4, column=1)
 
 start_button = tk.Button(text="Start", command=start_timer, highlightbackground=YELLOW)
 start_button.grid(row=2, column=0)
